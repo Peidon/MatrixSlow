@@ -24,6 +24,8 @@ female_bfrs = np.random.normal(22, 2, 500)
 male_labels = [1] * 500
 female_labels = [-1] * 500
 
+# 特征纬度 3 (height, weight, body-fat rate)
+# label 输入到 Loss
 train_set = np.array([np.concatenate((male_heights, female_heights)),
                       np.concatenate((male_weights, female_weights)),
                       np.concatenate((male_bfrs, female_bfrs)),
@@ -50,6 +52,8 @@ output = ms.ops.Add(ms.ops.MatMul(w, x), b)
 predict = ms.ops.Step(output)
 
 # 损失函数
+# 因为Label 是 1 或 -1, 所以这里 PerceptionLoss(Label * output) 作为激活函数
+# 计算结果小于 0 则施加惩罚
 loss = ms.ops.loss.PerceptionLoss(ms.ops.MatMul(label, output))
 
 # 学习率

@@ -9,3 +9,4 @@ export
 *.html
 *.DS_Store
 .idea
+**ipynb_checkpoints

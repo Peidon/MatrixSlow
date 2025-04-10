@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('../..')
 
 import numpy as np
@@ -25,6 +26,7 @@ train_set = np.array([np.concatenate((male_heights, female_heights)),
 # 随机打乱样本顺序
 np.random.shuffle(train_set)
 
+# 从随机样本中计算得出的损失值是随机变量，对N个样本的损失值取平均值，是对损失值的估计，N 就是批大小
 # 批大小
 batch_size = 10
 
@@ -55,7 +57,7 @@ predict = ms.ops.Step(output)
 loss = ms.ops.loss.PerceptionLoss(ms.ops.Multiply(label, output))
 
 # 一个mini batch的平均损失
-B =  ms.core.Variable(dim=(1, batch_size), init=False, trainable=False)
+B = ms.core.Variable(dim=(1, batch_size), init=False, trainable=False)
 B.set_value(1 / batch_size * np.mat(np.ones(batch_size)))
 mean_loss = ms.ops.MatMul(B, loss)
 
@@ -67,7 +69,6 @@ for epoch in range(50):
 
     # 遍历训练集中的样本
     for i in np.arange(0, len(train_set), batch_size):
-
         # 取一个mini batch的样本的特征
         features = np.mat(train_set[i:i + batch_size, :-1])
 
@@ -96,13 +97,12 @@ for epoch in range(50):
 
     # 遍历训练集，计算当前模型对每个样本的预测值
     for i in np.arange(0, len(train_set), batch_size):
-
         features = np.mat(train_set[i:i + batch_size, :-1])
         X.set_value(features)
 
         # 在模型的predict节点上执行前向传播
         predict.forward()
-        
+
         # 当前模型对一个mini batch的样本的预测结果
         pred.extend(predict.value.A.ravel())
 
