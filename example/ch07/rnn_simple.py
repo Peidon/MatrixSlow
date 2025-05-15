@@ -10,9 +10,9 @@ class SimpleRNN(nn.Module):
         self.input_dim = x_dim
         self.hidden_size = h_size
 
-        self.fc1 = nn.Linear(h_size, 40, dtype=float)
-        self.fc2 = nn.Linear(40, 10, dtype=float)
-        self.out_layer = nn.Linear(10, 2, dtype=float)
+        # self.fc1 = nn.Linear(h_size, 40, dtype=float)
+        # self.fc2 = nn.Linear(40, 10, dtype=float)
+        self.out_layer = nn.Linear(h_size, 2, dtype=float)
 
     # def __call__(self, x):
     #     return self.forward(x)
@@ -36,7 +36,7 @@ class SimpleRNN(nn.Module):
         for i in range(1, seq_len):
             output, ht = self.step(x[i, :], ht)
 
-        f1 = torch.relu(self.fc1(output))
-        f2 = torch.relu(self.fc2(f1))
-        r_out = self.out_layer(f2)
-        return r_out
+        # f1 = torch.relu(self.fc1(output))
+        # f2 = torch.relu(self.fc2(f1))
+        r_out = torch.relu(output)
+        return self.out_layer(r_out)
