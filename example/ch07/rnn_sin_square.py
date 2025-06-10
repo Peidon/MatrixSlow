@@ -16,23 +16,21 @@ from scipy import signal
 def get_sequence_data(dimension=10, length=10,
                       number_of_examples=1000, train_set_ratio=0.7, seed=42):
     """
-    生成两类序列数据。
+    生成两类序列数据
+    正弦波和方波
+    seq[0] sin
+    seq[1] square
     """
-    xx = []
-
-    # 正弦波
-    xx.append(np.sin(np.arange(0, 10, 10 / length)).reshape(-1, 1))
-
-    # 方波
-    xx.append(np.array(signal.square(np.arange(0, 10, 10 / length))).reshape(-1, 1))
+    seq = [np.sin(np.arange(0, 10, 10 / length)).reshape(-1, 1),
+          np.array(signal.square(np.arange(0, 10, 10 / length))).reshape(-1, 1)]
 
     data = []
     for i in range(2):
-        x = xx[i]
+        s = seq[i]
         for j in range(number_of_examples // 2):
-            sequence = x + np.random.normal(0, 0.6, (len(x), dimension))  # 加入噪声
-            label = np.array([int(i == k) for k in range(2)])
-            data.append(np.c_[sequence.reshape(1, -1), label.reshape(1, -1)])
+            sequence = s + np.random.normal(0, 0.6, (len(s), dimension))  # 加入噪声
+            labels = np.array([int(i == k) for k in range(2)])
+            data.append(np.c_[sequence.reshape(1, -1), labels.reshape(1, -1)])
 
     # 把各个类别的样本合在一起
     data = np.concatenate(data, axis=0)
